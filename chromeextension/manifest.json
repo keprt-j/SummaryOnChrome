@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Summarizer",
+    "name": "Glance",
     "version": "1.0",
-    "description": "A Chrome extension to summarize topics using AI.",
+    "description": "A Chrome extension to get the essence of a video/article in a glance.",
     "permissions": [
       "activeTab",
       "scripting",
