@@ -1,6 +1,4 @@
-// Simple and reliable content script for text selection and summarization
-
-// Check if already injected to prevent duplicates
+// Prevent duplicate injection
 if (window.summarizerExtensionLoaded) {
     throw new Error('Already loaded');
 }
@@ -9,8 +7,6 @@ window.summarizerExtensionLoaded = true;
 // Global variables
 let currentButton = null;
 let isProcessing = false;
-
-// Main text selection handler
 let selectionTimeout = null;
 let lastSelectedText = '';
 
@@ -196,11 +192,6 @@ function showSummaryModal(summary) {
     // Add event listeners
     function closeModal() {
         modal.remove();
-        // Also close Q&A modal if it's open
-        const qaModal = document.getElementById('qa-modal');
-        if (qaModal) {
-            qaModal.remove();
-        }
     }
     
     closeBtn.addEventListener('click', closeModal);
@@ -248,9 +239,9 @@ function showSummaryModal(summary) {
     
     qaBtn.addEventListener('click', function() {
         showQAModal();
-        // Add class to summary modal to adjust its position with animation
-        modal.classList.add('with-qa');
-        modal.style.animation = 'slideToLeft 0.3s ease-out';
+        // Move summary modal slightly to the left
+        modal.style.transform = 'translateX(-20px)';
+        modal.style.transition = 'transform 0.3s ease';
     });
     
     // Close on outside click
@@ -330,6 +321,7 @@ function showQAModal() {
     // Create Q&A modal
     const qaModal = document.createElement('div');
     qaModal.id = 'qa-modal';
+    qaModal.style.animation = 'slideInRight 0.3s ease-out';
     
     const qaContent = document.createElement('div');
     qaContent.className = 'modal-content qa-modal-content';
@@ -349,9 +341,9 @@ function showQAModal() {
     qaHeader.appendChild(qaTitle);
     qaHeader.appendChild(qaCloseBtn);
     
-    // Add Q&A body (matching summary modal structure)
-    const qaBody = document.createElement('div');
-    qaBody.className = 'modal-body';
+    // Add Q&A form
+    const qaForm = document.createElement('div');
+    qaForm.className = 'qa-form';
     
     const questionInput = document.createElement('input');
     questionInput.type = 'text';
@@ -368,24 +360,13 @@ function showQAModal() {
     qaResult.className = 'qa-result';
     qaResult.id = 'qa-result';
     
-    qaBody.appendChild(questionInput);
-    qaBody.appendChild(askBtn);
-    qaBody.appendChild(qaResult);
+    qaForm.appendChild(questionInput);
+    qaForm.appendChild(askBtn);
+    qaForm.appendChild(qaResult);
     
-    // Add Q&A footer (matching summary modal structure)
-    const qaFooter = document.createElement('div');
-    qaFooter.className = 'modal-footer';
-    
-    const closeQAModalBtn = document.createElement('button');
-    closeQAModalBtn.textContent = 'Close';
-    closeQAModalBtn.className = 'modal-btn close-modal-btn';
-    
-    qaFooter.appendChild(closeQAModalBtn);
-    
-    // Assemble Q&A modal (matching summary modal structure)
+    // Assemble Q&A modal
     qaContent.appendChild(qaHeader);
-    qaContent.appendChild(qaBody);
-    qaContent.appendChild(qaFooter);
+    qaContent.appendChild(qaForm);
     qaModal.appendChild(qaContent);
     
     // Add to page
@@ -398,16 +379,15 @@ function showQAModal() {
         
         setTimeout(() => {
             qaModal.remove();
-            // Remove the class from summary modal to restore its position
+            // Reset summary modal position
             const summaryModal = document.getElementById('summary-modal');
             if (summaryModal) {
-                summaryModal.classList.remove('with-qa');
+                summaryModal.style.transform = 'translateX(0)';
             }
         }, 300);
     }
     
     qaCloseBtn.addEventListener('click', closeQAModal);
-    closeQAModalBtn.addEventListener('click', closeQAModal);
     
     // Handle question asking
     askBtn.addEventListener('click', function() {
@@ -451,9 +431,11 @@ async function handleQAQuestion() {
         return;
     }
     
-    // Show processing state (matching summary modal style)
+    // Show loading state
     askBtn.textContent = '⏳ Processing...';
     askBtn.disabled = true;
+    qaResult.textContent = 'Analyzing page content and generating answer...';
+    qaResult.className = 'qa-result loading';
     
     try {
         // Get page content
@@ -469,9 +451,7 @@ async function handleQAQuestion() {
             askBtn.disabled = false;
             
             if (response && response.success) {
-                // Format answer with proper indentation (matching summary format)
-                const formattedAnswer = response.answer.replace(/\n/g, '<br>');
-                qaResult.innerHTML = formattedAnswer;
+                qaResult.textContent = response.answer;
                 qaResult.className = 'qa-result success';
             } else {
                 qaResult.textContent = response?.error || 'Error: Could not generate an answer.';

@@ -1,7 +1,4 @@
-/* Import shared styles */
-@import url('shared.css');
-
-/* Content-specific floating button */
+/* Floating summarize button */
 #summarize-button {
     position: fixed;
     z-index: 10000;
@@ -13,7 +10,7 @@
     font-size: 16px;
     font-family: 'Red Hat Display', sans-serif;
     cursor: pointer;
-    box-shadow: 0 4px 4px 0 rgba(31, 38, 135, 0.37);
+    box-shadow: 0 8px 8px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
     font-weight: 500;
@@ -30,7 +27,7 @@
     transform: none;
 }
 
-/* Content-specific modal styles - using shared glass styles */
+/* Modal styles */
 #summary-modal {
     position: fixed;
     top: 0;
@@ -42,25 +39,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(5px);
-}
-
-/* When Q&A modal is open, adjust summary modal position and remove blur */
-#summary-modal.with-qa {
-    justify-content: flex-start;
-    align-items: center;
-    padding-left: 20px;
-    background: transparent;
-    backdrop-filter: none;
-}
-
-@keyframes slideToLeft {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(-20px);
-    }
 }
 
 .modal-content {
@@ -68,7 +46,7 @@
     padding: 20px;
     border-radius: 16px;
     max-width: 600px;
-    max-height: 90vh;
+    max-height: 80vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -76,8 +54,6 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     font-family: 'Red Hat Display', sans-serif;
 }
-
-
 
 .modal-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -117,8 +93,6 @@
     background: rgba(255, 255, 255, 0.3);
     transform: scale(1.1);
 }
-
-
 
 .modal-body {
     line-height: 1.6;
@@ -177,7 +151,15 @@
     box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
 }
 
-/* Context Menu with Glassmorphism */
+.qa-btn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+}
+
+.qa-btn:hover {
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+/* Context menu */
 #context-menu {
     position: fixed;
     background: rgba(255, 255, 255, 0.1);
@@ -203,59 +185,18 @@
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        margin: 10px;
-        max-width: none;
-    }
-    
-    .modal-header {
-        padding: 15px 20px 10px;
-    }
-    
-    .modal-body {
-        padding: 15px;
-    }
-    
-    .modal-footer {
-        padding: 10px 20px 20px;
-        flex-direction: column;
-    }
-    
-    .modal-btn {
-        width: 100%;
-    }
-    
-    #summarize-button {
-        font-size: 14px;
-        padding: 8px 12px;
-    }
-    
-    /* Q&A modal responsive adjustments */
-    .qa-modal-content {
-        width: 95%;
-        max-width: none;
-        margin: 10px;
-        max-height: 80vh;
-    }
-}
-
-/* Q&A Modal Styles */
+/* Q&A Modal */
 #qa-modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: transparent;
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     z-index: 10002;
-    pointer-events: none;
-    animation: slideInRight 0.3s ease-out;
 }
 
 @keyframes slideInRight {
@@ -283,22 +224,25 @@
 .qa-modal-content {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 16px;
-    padding: 20px;
-    max-width: 400px;
-    width: 80%;
-    max-height: 90vh;
+    padding: 0;
+    max-width: 450px;
+    width: 85%;
+    max-height: 70vh;
     overflow-y: auto;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(10px);
+    margin-left: auto;
     margin-right: 20px;
-    pointer-events: auto;
-    font-family: 'Red Hat Display', sans-serif;
 }
 
+.qa-form {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
-
-/* Q&A form styles - matching summary modal structure */
 .qa-input {
     width: 100%;
     padding: 12px 16px;
@@ -310,7 +254,6 @@
     backdrop-filter: blur(10px);
     box-sizing: border-box;
     font-family: 'Red Hat Display', sans-serif;
-    margin-bottom: 15px;
 }
 
 .qa-input:focus {
@@ -323,46 +266,21 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
-.qa-input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #2d3748;
-    font-size: 14px;
-    backdrop-filter: blur(10px);
-    box-sizing: border-box;
-    font-family: 'Red Hat Display', sans-serif;
-}
-
-.qa-input:focus {
-    outline: none;
-    border-color: #667eea;
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.qa-input::placeholder {
-    color: #718096;
-}
-
 .ask-btn {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 12px 24px;
+    border-radius: 12px;
     cursor: pointer;
+    font-weight: 600;
     font-size: 14px;
-    font-weight: 500;
     transition: all 0.3s ease;
-    font-family: 'Red Hat Display', sans-serif;
-    margin-bottom: 15px;
 }
 
 .ask-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .ask-btn:disabled {
@@ -372,21 +290,31 @@
 }
 
 .qa-result {
+    margin-top: 15px;
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 14px;
     line-height: 1.6;
     color: white;
-    font-size: 15px;
-    font-family: 'Red Hat Display', sans-serif;
+    backdrop-filter: blur(10px);
     display: none;
+}
+
+.qa-result.loading {
+    display: block;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .qa-result.error {
     display: block;
     color: #ff6b6b;
+    border-color: #ff6b6b;
 }
 
 .qa-result.success {
     display: block;
     color: white;
 }
-
-
