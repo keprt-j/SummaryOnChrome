@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
         summaryP: getEl('summary'),
         saveButtons: getEl('save-buttons'),
         savePdfBtn: getEl('savePdfBtn'),
+        // Q&A elements
+        tabBtns: document.querySelectorAll('.tab-btn'),
+        tabContents: document.querySelectorAll('.tab-content'),
+        questionInput: getEl('questionInput'),
+        askBtn: getEl('askBtn'),
+        qaResult: getEl('qa-result'),
     };
 
     const showView = (viewName) => {
@@ -30,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: `Please provide a summary of this:\n\n${documentContent}. Break up your summary into digestible bullet points. Do not bold or italicize the text.` }] }]
+                contents: [{ parts: [{ text: `Please provide a concise summary of this text:\n\n${documentContent}. Break up your summary into digestible bullet points. Do not bold or italicize the text.` }] }]
             })
         });
         
@@ -184,6 +190,99 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Tab switching functionality
+    const switchTab = (tabName) => {
+        // Update tab buttons
+        elements.tabBtns.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.tab === tabName) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Update tab content
+        elements.tabContents.forEach(content => {
+            content.classList.remove('active');
+            if (content.id === `${tabName}-tab`) {
+                content.classList.add('active');
+            }
+        });
+    };
+
+    // Q&A functionality
+    const handleAskQuestion = async () => {
+        const question = elements.questionInput.value.trim();
+        if (!question) {
+            elements.qaResult.textContent = 'Please enter a question.';
+            elements.qaResult.className = 'qa-result error';
+            return;
+        }
+
+        // Show loading state
+        elements.qaResult.textContent = 'Analyzing page content and generating answer...';
+        elements.qaResult.className = 'qa-result loading';
+
+        try {
+            // Get content from active tab
+            const content = await getContentFromActiveTab();
+            if (!content) {
+                elements.qaResult.textContent = 'Error: Could not access active tab content.';
+                elements.qaResult.className = 'qa-result error';
+                return;
+            }
+
+            // Get API key
+            const result = await chrome.storage.sync.get(['apiKey']);
+            const apiKey = result.apiKey;
+            
+            if (!apiKey) {
+                elements.qaResult.textContent = 'Error: API Key not found. Please set it first.';
+                elements.qaResult.className = 'qa-result error';
+                return;
+            }
+
+            // Generate Q&A prompt
+            const qaPrompt = `Based on the following webpage content, please answer this question: "${question}"
+
+Webpage Content:
+${content}
+
+Please provide a clear, concise answer based only on the information available in the webpage content above. Do not reference where the data is from, just answer the question using the data`;
+
+            // Send to API
+            const answer = await getQAResponse(qaPrompt, apiKey);
+            
+            if (answer) {
+                elements.qaResult.textContent = answer;
+                elements.qaResult.className = 'qa-result success';
+            } else {
+                elements.qaResult.textContent = 'Error: Could not generate an answer.';
+                elements.qaResult.className = 'qa-result error';
+            }
+
+        } catch (error) {
+            elements.qaResult.textContent = `Error: ${error.message}`;
+            elements.qaResult.className = 'qa-result error';
+        }
+    };
+
+    const getQAResponse = async (prompt, apiKey) => {
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+            })
+        });
+        
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error?.message || response.statusText);
+        }
+        return data.candidates[0]?.content?.parts[0]?.text;
+    };
+
     const init = () => {
         elements.saveApiKeyBtn.addEventListener('click', handleSaveApiKey);
         elements.changeApiKeyBtn.addEventListener('click', handleChangeApiKey);
@@ -192,6 +291,19 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.youtubeRadio.addEventListener('change', handleInputTypeChange);
         elements.summarizeBtn.addEventListener('click', handleSummarize);
         elements.savePdfBtn.addEventListener('click', handleSavePdf);
+
+        // Tab switching
+        elements.tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        // Q&A functionality
+        elements.askBtn.addEventListener('click', handleAskQuestion);
+        elements.questionInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleAskQuestion();
+            }
+        });
 
         chrome.storage.sync.get(['apiKey'], (result) => {
             showView(result.apiKey ? 'main' : 'api');

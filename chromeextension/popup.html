@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>AI Summarizer</title>
+    <title>Glance</title>
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
@@ -20,22 +20,42 @@
                     <div class="slider round"></div>
                 </label>
             </div>
-            <h2>Summarize Document</h2>
-            <div>
-                <input type="radio" id="activeTabRadio" name="inputType" value="activeTab" checked>
-                <label for="activeTabRadio">Active Tab</label>
-                <input type="radio" id="youtubeRadio" name="inputType" value="youtube">
-                <label for="youtubeRadio">YouTube URL</label>
+            <h2>Glance</h2>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="summarize">Summarize</button>
+                <button class="tab-btn" data-tab="qa">Ask Questions</button>
             </div>
-            <div id="youtubeInputContainer" style="display: none;">
-                <input type="text" id="youtubeUrl" placeholder="Enter a YouTube video URL" />
+            
+            <!-- Summarize Tab -->
+            <div id="summarize-tab" class="tab-content active">
+                <div>
+                    <input type="radio" id="activeTabRadio" name="inputType" value="activeTab" checked>
+                    <label for="activeTabRadio">Active Tab</label>
+                    <input type="radio" id="youtubeRadio" name="inputType" value="youtube">
+                    <label for="youtubeRadio">YouTube URL</label>
+                </div>
+                <div id="youtubeInputContainer" style="display: none;">
+                    <input type="text" id="youtubeUrl" placeholder="Enter a YouTube video URL" />
+                </div>
+                <button id="summarizeBtn" class="glass-button">Summarize</button>
+                <p id="summary"></p>
+                <div id="save-buttons" style="display: none;">
+                    <button id="savePdfBtn">Save as PDF</button>
+                </div>
             </div>
-    <button id="summarizeBtn">Summarize</button>
-    <p id="summary"></p>
-    <div id="save-buttons" style="display: none;">
-        <button id="savePdfBtn">📄 Save as PDF</button>
-    </div>
-    <a href="#" id="changeApiKeyBtn" class="change-key-link">Change API Key</a>
+            
+            <!-- Q&A Tab -->
+            <div id="qa-tab" class="tab-content">
+                <div class="qa-container">
+                    <input type="text" id="questionInput" placeholder="Ask a question about this page..." />
+                    <button id="askBtn" class="glass-button">Ask Question</button>
+                    <div id="qa-result" class="qa-result"></div>
+                </div>
+            </div>
+            
+            <a href="#" id="changeApiKeyBtn" class="change-key-link">Change API Key</a>
         </div>
     </div>
     <script src="lib/jspdf.umd.min.js"></script>

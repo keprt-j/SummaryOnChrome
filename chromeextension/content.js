@@ -171,12 +171,17 @@ function showSummaryModal(summary) {
     savePdfBtn.textContent = '📄 Save PDF';
     savePdfBtn.className = 'modal-btn save-pdf-btn';
     
+    const qaBtn = document.createElement('button');
+    qaBtn.textContent = '❓ Ask Questions';
+    qaBtn.className = 'modal-btn qa-btn';
+    
     const closeModalBtn = document.createElement('button');
     closeModalBtn.textContent = 'Close';
     closeModalBtn.className = 'modal-btn close-modal-btn';
     
     buttons.appendChild(copyBtn);
     buttons.appendChild(savePdfBtn);
+    buttons.appendChild(qaBtn);
     buttons.appendChild(closeModalBtn);
     
     // Assemble modal
@@ -191,6 +196,11 @@ function showSummaryModal(summary) {
     // Add event listeners
     function closeModal() {
         modal.remove();
+        // Also close Q&A modal if it's open
+        const qaModal = document.getElementById('qa-modal');
+        if (qaModal) {
+            qaModal.remove();
+        }
     }
     
     closeBtn.addEventListener('click', closeModal);
@@ -234,6 +244,13 @@ function showSummaryModal(summary) {
                 savePdfBtn.textContent = '📄 Save PDF';
             }, 2000);
         }
+    });
+    
+    qaBtn.addEventListener('click', function() {
+        showQAModal();
+        // Add class to summary modal to adjust its position with animation
+        modal.classList.add('with-qa');
+        modal.style.animation = 'slideToLeft 0.3s ease-out';
     });
     
     // Close on outside click
@@ -301,3 +318,184 @@ document.addEventListener('contextmenu', function(event) {
         });
     }
 });
+
+// Q&A Modal functionality
+function showQAModal() {
+    // Remove existing Q&A modal
+    const existingQAModal = document.getElementById('qa-modal');
+    if (existingQAModal) {
+        existingQAModal.remove();
+    }
+    
+    // Create Q&A modal
+    const qaModal = document.createElement('div');
+    qaModal.id = 'qa-modal';
+    
+    const qaContent = document.createElement('div');
+    qaContent.className = 'modal-content qa-modal-content';
+    
+    // Add header
+    const qaHeader = document.createElement('div');
+    qaHeader.className = 'modal-header';
+    
+    const qaTitle = document.createElement('h2');
+    qaTitle.textContent = '❓ Ask Questions';
+    qaTitle.className = 'modal-title';
+    
+    const qaCloseBtn = document.createElement('button');
+    qaCloseBtn.textContent = '×';
+    qaCloseBtn.className = 'modal-close-btn';
+    
+    qaHeader.appendChild(qaTitle);
+    qaHeader.appendChild(qaCloseBtn);
+    
+    // Add Q&A body (matching summary modal structure)
+    const qaBody = document.createElement('div');
+    qaBody.className = 'modal-body';
+    
+    const questionInput = document.createElement('input');
+    questionInput.type = 'text';
+    questionInput.placeholder = 'Ask a question about this page...';
+    questionInput.className = 'qa-input';
+    questionInput.id = 'qa-question-input';
+    
+    const askBtn = document.createElement('button');
+    askBtn.textContent = 'Ask Question';
+    askBtn.className = 'modal-btn ask-btn';
+    askBtn.id = 'qa-ask-btn';
+    
+    const qaResult = document.createElement('div');
+    qaResult.className = 'qa-result';
+    qaResult.id = 'qa-result';
+    
+    qaBody.appendChild(questionInput);
+    qaBody.appendChild(askBtn);
+    qaBody.appendChild(qaResult);
+    
+    // Add Q&A footer (matching summary modal structure)
+    const qaFooter = document.createElement('div');
+    qaFooter.className = 'modal-footer';
+    
+    const closeQAModalBtn = document.createElement('button');
+    closeQAModalBtn.textContent = 'Close';
+    closeQAModalBtn.className = 'modal-btn close-modal-btn';
+    
+    qaFooter.appendChild(closeQAModalBtn);
+    
+    // Assemble Q&A modal (matching summary modal structure)
+    qaContent.appendChild(qaHeader);
+    qaContent.appendChild(qaBody);
+    qaContent.appendChild(qaFooter);
+    qaModal.appendChild(qaContent);
+    
+    // Add to page
+    document.body.appendChild(qaModal);
+    
+    // Add event listeners
+    function closeQAModal() {
+        // Add slide-out animation
+        qaModal.style.animation = 'slideOutRight 0.3s ease-in forwards';
+        
+        setTimeout(() => {
+            qaModal.remove();
+            // Remove the class from summary modal to restore its position
+            const summaryModal = document.getElementById('summary-modal');
+            if (summaryModal) {
+                summaryModal.classList.remove('with-qa');
+            }
+        }, 300);
+    }
+    
+    qaCloseBtn.addEventListener('click', closeQAModal);
+    closeQAModalBtn.addEventListener('click', closeQAModal);
+    
+    // Handle question asking
+    askBtn.addEventListener('click', function() {
+        handleQAQuestion();
+    });
+    
+    questionInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            handleQAQuestion();
+        }
+    });
+    
+    // Close on outside click
+    qaModal.addEventListener('click', function(event) {
+        if (event.target === qaModal) {
+            closeQAModal();
+        }
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeQAModal();
+        }
+    });
+    
+    // Focus on input
+    questionInput.focus();
+}
+
+// Handle Q&A question
+async function handleQAQuestion() {
+    const questionInput = document.getElementById('qa-question-input');
+    const askBtn = document.getElementById('qa-ask-btn');
+    const qaResult = document.getElementById('qa-result');
+    
+    const question = questionInput.value.trim();
+    if (!question) {
+        qaResult.textContent = 'Please enter a question.';
+        qaResult.className = 'qa-result error';
+        return;
+    }
+    
+    // Show processing state (matching summary modal style)
+    askBtn.textContent = '⏳ Processing...';
+    askBtn.disabled = true;
+    
+    try {
+        // Get page content
+        const pageContent = getPageContent();
+        
+        // Send to background script for API call
+        chrome.runtime.sendMessage({
+            action: 'askQuestion',
+            question: question,
+            content: pageContent
+        }, function(response) {
+            askBtn.textContent = 'Ask Question';
+            askBtn.disabled = false;
+            
+            if (response && response.success) {
+                // Format answer with proper indentation (matching summary format)
+                const formattedAnswer = response.answer.replace(/\n/g, '<br>');
+                qaResult.innerHTML = formattedAnswer;
+                qaResult.className = 'qa-result success';
+            } else {
+                qaResult.textContent = response?.error || 'Error: Could not generate an answer.';
+                qaResult.className = 'qa-result error';
+            }
+        });
+        
+    } catch (error) {
+        askBtn.textContent = 'Ask Question';
+        askBtn.disabled = false;
+        qaResult.textContent = `Error: ${error.message}`;
+        qaResult.className = 'qa-result error';
+    }
+}
+
+// Get page content for Q&A
+function getPageContent() {
+    // Try to get main content first
+    const mainContent = document.querySelector('main, article, .content, .post, .entry');
+    if (mainContent) {
+        return mainContent.innerText || mainContent.textContent;
+    }
+    
+    // Fallback to body content
+    const body = document.body;
+    return body.innerText || body.textContent;
+}

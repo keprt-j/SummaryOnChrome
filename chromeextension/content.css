@@ -1,7 +1,7 @@
-/* Import Google Fonts for consistency */
-@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600&display=swap');
+/* Import shared styles */
+@import url('shared.css');
 
-/* Enhanced Floating Button with Glassmorphism */
+/* Content-specific floating button */
 #summarize-button {
     position: fixed;
     z-index: 10000;
@@ -13,7 +13,7 @@
     font-size: 16px;
     font-family: 'Red Hat Display', sans-serif;
     cursor: pointer;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    box-shadow: 0 4px 4px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
     font-weight: 500;
@@ -30,7 +30,7 @@
     transform: none;
 }
 
-/* Enhanced Modal with Glassmorphism */
+/* Content-specific modal styles - using shared glass styles */
 #summary-modal {
     position: fixed;
     top: 0;
@@ -45,12 +45,30 @@
     backdrop-filter: blur(5px);
 }
 
+/* When Q&A modal is open, adjust summary modal position and remove blur */
+#summary-modal.with-qa {
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 20px;
+    background: transparent;
+    backdrop-filter: none;
+}
+
+@keyframes slideToLeft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-20px);
+    }
+}
+
 .modal-content {
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 16px;
     max-width: 600px;
-    max-height: 80vh;
+    max-height: 90vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -58,6 +76,8 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     font-family: 'Red Hat Display', sans-serif;
 }
+
+
 
 .modal-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -97,6 +117,8 @@
     background: rgba(255, 255, 255, 0.3);
     transform: scale(1.1);
 }
+
+
 
 .modal-body {
     line-height: 1.6;
@@ -210,4 +232,161 @@
         font-size: 14px;
         padding: 8px 12px;
     }
+    
+    /* Q&A modal responsive adjustments */
+    .qa-modal-content {
+        width: 95%;
+        max-width: none;
+        margin: 10px;
+        max-height: 80vh;
+    }
 }
+
+/* Q&A Modal Styles */
+#qa-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 10002;
+    pointer-events: none;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.qa-modal-content {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    max-width: 400px;
+    width: 80%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(10px);
+    margin-right: 20px;
+    pointer-events: auto;
+    font-family: 'Red Hat Display', sans-serif;
+}
+
+
+
+/* Q&A form styles - matching summary modal structure */
+.qa-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+    box-sizing: border-box;
+    font-family: 'Red Hat Display', sans-serif;
+    margin-bottom: 15px;
+}
+
+.qa-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.qa-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.qa-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #2d3748;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+    box-sizing: border-box;
+    font-family: 'Red Hat Display', sans-serif;
+}
+
+.qa-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.qa-input::placeholder {
+    color: #718096;
+}
+
+.ask-btn {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-family: 'Red Hat Display', sans-serif;
+    margin-bottom: 15px;
+}
+
+.ask-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.ask-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.qa-result {
+    line-height: 1.6;
+    color: white;
+    font-size: 15px;
+    font-family: 'Red Hat Display', sans-serif;
+    display: none;
+}
+
+.qa-result.error {
+    display: block;
+    color: #ff6b6b;
+}
+
+.qa-result.success {
+    display: block;
+    color: white;
+}
+
+

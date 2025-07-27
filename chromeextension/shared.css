@@ -1,0 +1,67 @@
+/* Shared Glassmorphism Styles */
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Common Glassmorphism Variables */
+:root {
+  /* Light Mode Colors */
+  --light-primary: #667eea;
+  --light-secondary: #764ba2;
+  --light-glass: rgba(255, 255, 255, 0.1);
+  --light-glass-border: rgba(255, 255, 255, 0.2);
+  --light-text: #2d3748;
+  --light-text-secondary: #4a5568;
+  
+  /* Dark Mode Colors */
+  --dark-primary: #00d4ff;
+  --dark-secondary: #0099cc;
+  --dark-glass: rgba(255, 255, 255, 0.05);
+  --dark-glass-border: rgba(255, 255, 255, 0.1);
+  --dark-text: #ffffff;
+  --dark-text-secondary: #e2e8f0;
+  
+  /* Common */
+  --border-radius: 16px;
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+  --glass-blur: blur(10px);
+}
+
+/* Common Glassmorphism Button Styles */
+.glass-button {
+  background: var(--light-glass);
+  color: var(--light-text);
+  border: 1px solid var(--light-glass-border);
+  border-radius: var(--border-radius);
+  padding: 10px 15px;
+  font-size: 16px;
+  font-family: 'Red Hat Display', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.3);
+}
+
+.glass-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Dark mode for glass buttons */
+body.dark-mode .glass-button {
+  background: var(--dark-glass);
+  color: var(--dark-text);
+  border-color: var(--dark-glass-border);
+}
+
+body.dark-mode .glass-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 40px 0 rgba(0, 212, 255, 0.3);
+} 
