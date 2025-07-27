@@ -1,0 +1,216 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap');
+
+:root {
+  --primary-color: #00aaff;
+  --secondary-color: #003366;
+  --text-color: #ffffff;
+  --light-text-color: #000000;
+  --border-radius: 12px;
+  --box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+body {
+  font-family: 'Red Hat Display', sans-serif;
+  background: linear-gradient(to right, #000033, #003366);
+  color: var(--text-color);
+  margin: 0;
+  padding: 15px;
+  width: 500px;
+  box-sizing: border-box;
+}
+
+h1, h2, h3 {
+  color: var(--primary-color);
+  margin-top: 0;
+}
+
+p {
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--light-text-color);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'Red Hat Display', sans-serif;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: var(--box-shadow);
+  margin-top: 10px;
+  backdrop-filter: blur(10px);
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+button:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  font-family: 'Red Hat Display', sans-serif;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: var(--box-shadow);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  --primary-color: #58a6ff; 
+  --secondary-color: #0d1117; 
+  --text-color: #c9d1d9; 
+  --light-text-color: #000;
+}
+
+body.dark-mode .container {
+  background-color: #161b22; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode button {
+  background-color: var(--primary-color);
+  color: var(--light-text-color);
+}
+
+body.dark-mode button:hover {
+  background-color: #4a90e2;
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="number"],
+body.dark-mode textarea {
+  background-color: #0d1117;
+  color: var(--text-color);
+  border-color: #30363d;
+}
+
+body.dark-mode input[type="text"]:focus,
+body.dark-mode input[type="number"]:focus,
+body.dark-mode textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2);
+}
+
+/* Toggle Switch Styles */
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.theme-switch {
+  display: inline-block;
+  height: 24px;
+  position: relative;
+  width: 44px;
+}
+
+.theme-switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 16px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 16px;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Change API Key Link */
+.change-key-link {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    margin-top: 15px;
+    color: #888;
+}
+
+.change-key-link:hover {
+    color: var(--primary-color);
+}
+
+#summary {
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    border: 1px solid #e1e1e1;
+    font-size: 14px;
+    line-height: 1.5;
+    display: none; 
+    color: #000;
+}
+
+body.dark-mode #summary {
+    background-color: #161b22;
+    border-color: #30363d;
+}

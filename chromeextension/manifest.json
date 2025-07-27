@@ -1,0 +1,27 @@
+{
+    "manifest_version": 3,
+    "name": "Summarizer",
+    "version": "1.0",
+    "description": "A Chrome extension to summarize topics using AI.",
+    "permissions": [
+      "activeTab",
+      "scripting",
+      "storage",
+      "tabs"
+    ],
+    "host_permissions": [
+      "https://generativelanguage.googleapis.com/",
+      "https://www.youtube.com/",
+      "<all_urls>"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html",
+      "default_title": "Summarize Topic"
+    },
+    "icons": {
+      "512": "icons/subliminalitylogo.png"
+    }
+  }
